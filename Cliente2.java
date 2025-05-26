@@ -22,7 +22,7 @@ public class Cliente2 {
             while (true) {
                 mensagem = teclado.nextLine();
                 saida.println(mensagem);
-                if (mensagem.equalsIgnoreCase("/sair")) {
+                if (mensagem.equalsIgnoreCase("sair")) {
                     System.out.println("[Cliente] Desconectando...");
                     break;
                 }
