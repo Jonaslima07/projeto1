@@ -40,15 +40,18 @@ public class ServidorRunnable implements Runnable {
                         saida.println("Data atual: " + new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
                         break;
                     case "comando:2":
+                    case "2":
                         saida.println("Hora atual: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
                         break;
                     case "comando:3":
+                    case "3":
                         saida.println("Servidor IP: " + socket.getLocalAddress().getHostAddress()
                                 + ", Porta: " + socket.getLocalPort()
                                 + ", Cliente IP: " + ipCliente
                                 + " - Conexão ativa.");
                         break;
                     case "comando:4":
+                    case "4":
                         saida.println("IPs conectados: " + Servidor.ipsConectados);
                         break;
                     default:
