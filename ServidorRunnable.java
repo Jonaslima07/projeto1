@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,9 +22,7 @@ public class ServidorRunnable implements Runnable {
         String ipCliente = socket.getInetAddress().getHostAddress();
 
         try (
-            BufferedReader entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintStream saida = new PrintStream(socket.getOutputStream())
-        ) {
+                BufferedReader entrada = new BufferedReader(new InputStreamReader(socket.getInputStream())); PrintStream saida = new PrintStream(socket.getOutputStream())) {
             saida.println("Menu:");
             saida.println("comando:1 - Data atual");
             saida.println("comando:2 - Hora atual");
@@ -37,16 +36,17 @@ public class ServidorRunnable implements Runnable {
 
                 switch (mensagem.toLowerCase()) {
                     case "comando:1":
+                    case "1":
                         saida.println("Data atual: " + new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
                         break;
                     case "comando:2":
                         saida.println("Hora atual: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
                         break;
                     case "comando:3":
-                        saida.println("Servidor IP: " + socket.getLocalAddress().getHostAddress() +
-                                       ", Porta: " + socket.getLocalPort() +
-                                       ", Cliente IP: " + ipCliente +
-                                       " - Conexão ativa.");
+                        saida.println("Servidor IP: " + socket.getLocalAddress().getHostAddress()
+                                + ", Porta: " + socket.getLocalPort()
+                                + ", Cliente IP: " + ipCliente
+                                + " - Conexão ativa.");
                         break;
                     case "comando:4":
                         saida.println("IPs conectados: " + Servidor.ipsConectados);
@@ -54,6 +54,7 @@ public class ServidorRunnable implements Runnable {
                     default:
                         saida.println("Comando não reconhecido: " + mensagem);
                 }
+
             }
         } catch (IOException e) {
             System.out.println("[ServidorThread] Conexão encerrada com " + clienteIdentificador);

@@ -26,7 +26,7 @@ def cliente3():
                     print("[Cliente] Encerrando conexão.")
                     break
 
-                s.sendall((comando + "\n").encode())  # **IMPORTANTE: + "\n"**
+                s.sendall((comando + "\n").encode()) 
 
                 resposta = sock_file.readline()
                 if not resposta:
