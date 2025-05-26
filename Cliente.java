@@ -12,9 +12,6 @@ public class Cliente {
             PrintStream saida = new PrintStream(socket.getOutputStream());
             Scanner teclado = new Scanner(System.in);
 
-            // Remova este print daqui:
-            // System.out.println("[Cliente] Conectado ao servidor!");
-
             ClienteRunnable clienteRunnable = new ClienteRunnable(socket);
             Thread threadLeitura = new Thread(clienteRunnable);
             threadLeitura.start();
@@ -31,6 +28,7 @@ public class Cliente {
 
             saida.close();
             teclado.close();
+            
         } catch (IOException e) {
             System.out.println("[Cliente] Erro: " + e.getMessage());
         } finally {

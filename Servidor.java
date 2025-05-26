@@ -26,7 +26,7 @@ public class Servidor {
                     if (ipsConectados.contains(ipCliente)) {
                         System.out.println("[Servidor] " + ipCliente + " já está conectado. Conexão recusada.");
                         PrintStream saida = new PrintStream(clienteSocket.getOutputStream());
-                        saida.println("Rejeitado!!!: IP já conectado");
+                        saida.println("Rejeitado!, IP já conectado.");
                         clienteSocket.close();
                         continue;
                     }
