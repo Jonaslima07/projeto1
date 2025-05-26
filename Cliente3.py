@@ -17,7 +17,7 @@ def cliente3():
                     return
                 print(linha.strip())
 
-                # Verifica se o servidor rejeitou a conexão
+               
                 if linha.lower().startswith("rejeitado"):
                     print("[Cliente] Conexão rejeitada pelo servidor.")
                     return
@@ -25,7 +25,7 @@ def cliente3():
                 if "Digite seus comandos:" in linha:
                     break
 
-            # Só aqui, após garantir que não foi rejeitado:
+            
             print("[Cliente] Conectado ao servidor.")
 
             while True:
