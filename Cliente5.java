@@ -13,7 +13,7 @@ public class Cliente5 {
         ) {
             System.out.println("[Cliente] Conectado ao servidor!");
 
-            // Runnable para ouvir o servidor
+           
             ClienteRunnable clienteRunnable = new ClienteRunnable(socket);
             Thread threadLeitura = new Thread(clienteRunnable);
             threadLeitura.start();

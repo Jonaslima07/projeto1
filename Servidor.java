@@ -41,8 +41,7 @@ public class Servidor {
 
                     ipsConectados.add(ipCliente);
                     PrintStream saida = new PrintStream(clienteSocket.getOutputStream());
-                    saida.println("OK");  // confirma conexão aceita
-
+                    saida.println("OK");  
                     System.out.println("[Servidor] Cliente conectado: " + ipCliente);
 
                     ServidorRunnable tarefa = new ServidorRunnable(clienteSocket, ipCliente);

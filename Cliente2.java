@@ -13,7 +13,7 @@ public class Cliente2 {
         ) {
            
 
-            // Runnable para ouvir o servidor
+           
             ClienteRunnable clienteRunnable = new ClienteRunnable(socket);
             Thread threadLeitura = new Thread(clienteRunnable);
             threadLeitura.start();

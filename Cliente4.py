@@ -11,7 +11,7 @@ def cliente4():
 
             sock_file = s.makefile('r')
 
-            # Recebe o menu inicial
+           
             while True:
                 linha = sock_file.readline()
                 if not linha:
