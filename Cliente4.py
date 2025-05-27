@@ -1,43 +1,73 @@
 import socket
 
-def cliente4():
-    host = '127.1.0.1'
-    porta = 4000
+class ClienteSocket:
+    def __init__(self, host='localhost', porta=4000):
+        self.host = host
+        self.porta = porta
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect((host, porta))
+    def conectar(self):
+        try:
+            self.socket.connect((self.host, self.porta))
             print("[Cliente] Conectado ao servidor.")
+        except ConnectionRefusedError:
+            print("[Cliente] Não foi possível conectar ao servidor. Verifique se ele está em execução.")
+            return False
+        return True
 
-            sock_file = s.makefile('r')
+    def enviar_comando(self, comando):
+        try:
+            self.socket.sendall((comando + "\n").encode())
+            resposta = self.socket.recv(1024).decode()
+            return resposta.strip()
+        except Exception as e:
+            print(f"[Cliente] Erro ao enviar comando: {e}")
+            return None
 
-           
-            while True:
-                linha = sock_file.readline()
-                if not linha:
-                    break
-                print(linha.strip())
-                if "Digite seus comandos:" in linha:
-                    break
+    def receber_mensagem(self):
+        try:
+            dados = self.socket.recv(1024).decode()
+            return dados.strip()
+        except Exception as e:
+            print(f"[Cliente] Erro ao receber mensagem: {e}")
+            return None
 
-            while True:
-                comando = input("[Cliente] Digite um comando (ou 'sair' para encerrar): ").strip()
-                if comando.lower() == 'sair':
-                    print("[Cliente] Encerrando conexão.")
-                    break
+    def fechar_conexao(self):
+        self.socket.close()
+        print("[Cliente] Conexão encerrada.")
 
-                s.sendall((comando + "\n").encode()) 
+    def executar(self):
+        if not self.conectar():
+            return
 
-                resposta = sock_file.readline()
-                if not resposta:
-                    print("[Cliente] Conexão encerrada pelo servidor.")
-                    break
-                print("[Servidor] " + resposta.strip())
+       
+        while True:
+            mensagem = self.receber_mensagem()
+            if not mensagem:
+                print("[Cliente] Conexão encerrada pelo servidor.")
+                return
+            print(mensagem)
 
-    except ConnectionRefusedError:
-        print("[Cliente] Não foi possível conectar ao servidor. Verifique se ele está em execução.")
-    except Exception as e:
-        print(f"[Cliente] Erro: {e}")
+            if "Rejeitado" in mensagem:
+                print("[Cliente] Conexão rejeitada pelo servidor.")
+                self.fechar_conexao()
+                return
+            if "Digite seus comandos:" in mensagem:
+                break  
+
+       
+        while True:
+            comando = input("[Cliente] Digite um comando (ou 'sair' para encerrar): ").strip()
+            if comando.lower() == 'sair':
+                print("[Cliente] Encerrando conexão.")
+                break
+            resposta = self.enviar_comando(comando)
+            if resposta is None:
+                break
+            print("[Servidor] " + resposta)
+
+        self.fechar_conexao()
 
 if __name__ == '__main__':
-    cliente4()
+    cliente = ClienteSocket()
+    cliente.executar()
