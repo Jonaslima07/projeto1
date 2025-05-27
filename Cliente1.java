@@ -3,7 +3,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Cliente {
+public class Cliente1 {
 
     public static void main(String[] args) {
         Socket socket = null;

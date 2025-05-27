@@ -6,14 +6,12 @@ import java.util.Scanner;
 public class Cliente5 {
 
     public static void main(String[] args) {
-        try (
-            Socket socket = new Socket("localhost", 4000);
+        Socket socket = null;
+        try {
+            socket = new Socket("localhost", 4000);
             PrintStream saida = new PrintStream(socket.getOutputStream());
-            Scanner teclado = new Scanner(System.in)
-        ) {
-            System.out.println("[Cliente] Conectado ao servidor!");
+            Scanner teclado = new Scanner(System.in);
 
-           
             ClienteRunnable clienteRunnable = new ClienteRunnable(socket);
             Thread threadLeitura = new Thread(clienteRunnable);
             threadLeitura.start();
@@ -27,9 +25,20 @@ public class Cliente5 {
                     break;
                 }
             }
+
+            saida.close();
+            teclado.close();
+            
         } catch (IOException e) {
             System.out.println("[Cliente] Erro: " + e.getMessage());
         } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    System.out.println("[Cliente] Erro ao fechar socket: " + e.getMessage());
+                }
+            }
             System.out.println("[Cliente] Socket fechado.");
         }
     }

@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,7 +10,7 @@ public class ServidorRunnable implements Runnable {
 
     private final Socket socket;
     private final String clienteIdentificador;
-
+    private static final long timeOut = 100000;  
     public ServidorRunnable(Socket socket, String clienteIdentificador) {
         this.socket = socket;
         this.clienteIdentificador = clienteIdentificador;
@@ -20,9 +19,12 @@ public class ServidorRunnable implements Runnable {
     @Override
     public void run() {
         String ipCliente = socket.getInetAddress().getHostAddress();
+        long tempoInicial = System.currentTimeMillis();
 
         try (
-                BufferedReader entrada = new BufferedReader(new InputStreamReader(socket.getInputStream())); PrintStream saida = new PrintStream(socket.getOutputStream())) {
+            BufferedReader entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintStream saida = new PrintStream(socket.getOutputStream())
+        ) {
             saida.println("Menu:");
             saida.println("comando:1 - Data atual");
             saida.println("comando:2 - Hora atual");
@@ -30,34 +32,53 @@ public class ServidorRunnable implements Runnable {
             saida.println("comando:4 - Lista de IPs conectados ao servidor");
             saida.println("Digite seus comandos:");
 
-            String mensagem;
-            while ((mensagem = entrada.readLine()) != null) {
-                System.out.println("[Servidor] Recebido de " + clienteIdentificador + ": " + mensagem);
-
-                switch (mensagem.toLowerCase()) {
-                    case "comando:1":
-                    case "1":
-                        saida.println("Data atual: " + new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
-                        break;
-                    case "comando:2":
-                    case "2":
-                        saida.println("Hora atual: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
-                        break;
-                    case "comando:3":
-                    case "3":
-                        saida.println("Servidor IP: " + socket.getLocalAddress().getHostAddress()
-                                + ", Porta: " + socket.getLocalPort()
-                                + ", Cliente IP: " + ipCliente
-                                + " - Conexão ativa.");
-                        break;
-                    case "comando:4":
-                    case "4":
-                        saida.println("IPs conectados: " + Servidor.ipsConectados);
-                        break;
-                    default:
-                        saida.println("Comando não reconhecido: " + mensagem);
+            while (true) {
+                long tempoAtual = System.currentTimeMillis();
+                if (tempoAtual - tempoInicial > timeOut) {
+                    saida.println("Tempo de conexão excedido. Encerrando a conexão...");
+                    break;
                 }
 
+                
+                if (entrada.ready()) {
+                    String mensagem = entrada.readLine();
+
+                    if (mensagem == null) {
+                        break;  
+                    }
+
+                    System.out.println("[Servidor] Recebido de " + clienteIdentificador + ": " + mensagem);
+
+                    switch (mensagem.toLowerCase()) {
+                        case "comando:1":
+                        case "1":
+                            saida.println("Data atual: " + new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+                            break;
+                        case "comando:2":
+                        case "2":
+                            saida.println("Hora atual: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
+                            break;
+                        case "comando:3":
+                        case "3":
+                            saida.println("Servidor IP: " + socket.getLocalAddress().getHostAddress()
+                                    + ", Porta: " + socket.getLocalPort()
+                                    + ", Cliente IP: " + ipCliente
+                                    + " - Conexão ativa.");
+                            break;
+                        case "comando:4":
+                        case "4":
+                            saida.println("IPs conectados: " + Servidor.ipsConectados);
+                            break;
+                        default:
+                            saida.println("Comando não reconhecido: " + mensagem);
+                    }
+                } else {
+                    try {
+                        Thread.sleep(200);  
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                }
             }
         } catch (IOException e) {
             System.out.println("[ServidorThread] Conexão encerrada com " + clienteIdentificador);
